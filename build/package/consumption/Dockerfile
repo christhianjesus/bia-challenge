@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM golang:1.19-bullseye
+FROM golang:1.19-bullseye AS build
 
 WORKDIR /usr/src/app
 
@@ -12,8 +12,15 @@ COPY internal/ internal/
 
 RUN go build -o /echo-server cmd/consumption/main.go
 
-RUN ["chmod", "+x", "/echo-server"]
+## Deploy
+FROM gcr.io/distroless/base-debian11
+
+WORKDIR /
+
+COPY --from=build /echo-server /echo-server
 
 EXPOSE 8080
+
+USER nonroot:nonroot
 
 ENTRYPOINT ["/echo-server"]
