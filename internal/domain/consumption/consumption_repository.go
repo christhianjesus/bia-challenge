@@ -6,5 +6,5 @@ import (
 )
 
 type ConsumptionRepository interface {
-	GetByMeterIDsAndDateRange(ctx context.Context, meterIDs []int, startDate, endDate time.Time) ([]*Consumption, error)
+	GetByMetersIDsAndDateRange(ctx context.Context, metersIDs []int, startDate, endDate time.Time) ([]*Consumption, error)
 }

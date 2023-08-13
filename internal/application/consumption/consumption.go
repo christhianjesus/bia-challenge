@@ -5,14 +5,14 @@ import (
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 )
 
-func GroupByMeterIDs(consumptions []*consumption.Consumption, meterIDs []int) map[int][]*consumption.Consumption {
-	meterConsumptionsCounter := make(map[int]int, len(meterIDs))
+func GroupByMetersIDs(consumptions []*consumption.Consumption, metersIDs []int) map[int][]*consumption.Consumption {
+	meterConsumptionsCounter := make(map[int]int, len(metersIDs))
 	for _, consumption := range consumptions {
 		meterConsumptionsCounter[consumption.MeterID()] += 1
 	}
 
-	groupedConsumptions := make(map[int][]*consumption.Consumption, len(meterIDs))
-	for _, meterID := range meterIDs {
+	groupedConsumptions := make(map[int][]*consumption.Consumption, len(metersIDs))
+	for _, meterID := range metersIDs {
 		groupedConsumptions[meterID] = make([]*consumption.Consumption, 0, meterConsumptionsCounter[meterID])
 	}
 

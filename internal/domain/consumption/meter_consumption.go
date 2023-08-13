@@ -22,7 +22,7 @@ type MeterConsumption struct {
 	exported           []float64
 }
 
-/* func (c *MeterConsumption) GenerateSerializableResponse() map[string]interface{} {
+func (c *MeterConsumption) GenerateSerializableResponse() map[string]interface{} {
 	return map[string]interface{}{
 		"meter_id":            c.meterID,
 		"address":             c.address,
@@ -31,7 +31,7 @@ type MeterConsumption struct {
 		"reactive_capacitive": c.reactiveCapacitive,
 		"exported":            c.exported,
 	}
-} */
+}
 
 func accumulatedValues(consumptions []*Consumption) (active, reactiveInductive, reactiveCapacitive, exported float64) {
 	for _, consumption := range consumptions {

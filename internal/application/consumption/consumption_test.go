@@ -34,7 +34,7 @@ func setupPeriodsTest() []*period.Period {
 
 func TestGroupByMeterID(t *testing.T) {
 	consumptionCollection := setupConsumptionCollectionTest()
-	groupedConsumption := GroupByMeterIDs(consumptionCollection, []int{1, 2})
+	groupedConsumption := GroupByMetersIDs(consumptionCollection, []int{1, 2})
 
 	assert.NotNil(t, groupedConsumption)
 	assert.Len(t, groupedConsumption, 2)

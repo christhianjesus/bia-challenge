@@ -2,7 +2,6 @@ package consumption
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/christhianjesus/bia-challenge/internal/application/period"
@@ -20,38 +19,38 @@ func NewConsumptionService(cons consumption.ConsumptionRepository, addr address.
 	return &ConsumptionService{consumptionRepo: cons, addressRepo: addr, periodFact: psfa}
 }
 
-func (uc *ConsumptionService) GetAccumulatedConsumption(ctx context.Context, meterIDs []int, startDate, endDate time.Time,
-	period period.PeriodKind) ([]*consumption.MeterConsumption, error) {
-	addresses, err := uc.addressRepo.GetByMeterIDs(ctx, meterIDs)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+func (uc *ConsumptionService) GetAccumulatedConsumption(ctx context.Context, metersIDs []int, startDate, endDate time.Time,
+	kindPeriod string) ([]*consumption.MeterConsumption, error) {
+	/* 	addresses, err := uc.addressRepo.GetByMetersIDs(ctx, metersIDs)
+	   	if err != nil {
+	   		fmt.Println(err.Error())
+	   	} */
 
-	strategy, err := uc.periodFact.CreatePeriodStrategy(period)
+	strategy, err := uc.periodFact.CreatePeriodStrategy(period.PeriodKind(kindPeriod))
 	if err != nil {
 		return nil, err
 	}
 	periods := strategy.GeneratePeriods(startDate, endDate)
 
-	consumptions, err := uc.consumptionRepo.GetByMeterIDsAndDateRange(ctx, meterIDs, startDate, endDate)
+	consumptions, err := uc.consumptionRepo.GetByMetersIDsAndDateRange(ctx, metersIDs, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}
-	consumptionsByMeterID := GroupByMeterIDs(consumptions, meterIDs)
+	consumptionsByMeterID := GroupByMetersIDs(consumptions, metersIDs)
 
 	metersConsumption := make([]*consumption.MeterConsumption, 0, len(consumptionsByMeterID))
 
 	for meterID, consumptions := range consumptionsByMeterID {
 		consumptionByPeriod := GroupByPeriods(consumptions, periods)
-		meterConsumption := consumption.NewMeterConsumption(meterID, addresses[meterID], consumptionByPeriod)
+		meterConsumption := consumption.NewMeterConsumption(meterID, "addresses[meterID]", consumptionByPeriod)
 		metersConsumption = append(metersConsumption, meterConsumption)
 	}
 
 	return metersConsumption, nil
 }
 
-func (uc *ConsumptionService) GetConsumptionPeriods(ctx context.Context, startDate, endDate time.Time, period period.PeriodKind) ([]string, error) {
-	strategy, err := uc.periodFact.CreatePeriodStrategy(period)
+func (uc *ConsumptionService) GetConsumptionPeriods(ctx context.Context, startDate, endDate time.Time, kindPeriod string) ([]string, error) {
+	strategy, err := uc.periodFact.CreatePeriodStrategy(period.PeriodKind(kindPeriod))
 	if err != nil {
 		return nil, err
 	}
