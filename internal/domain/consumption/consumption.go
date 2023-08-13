@@ -1,11 +1,10 @@
 package consumption
 
 import (
-	"context"
 	"time"
 )
 
-func NewConsumption(id, meterID int, activeEnergy, reactiveEnergy, capacitiveReactive, solar float64, date time.Time) *Consumption {
+func NewConsumption(id string, meterID int, activeEnergy, reactiveEnergy, capacitiveReactive, solar float64, date time.Time) *Consumption {
 	return &Consumption{
 		id,
 		meterID,
@@ -18,7 +17,7 @@ func NewConsumption(id, meterID int, activeEnergy, reactiveEnergy, capacitiveRea
 }
 
 type Consumption struct {
-	id                 int
+	id                 string
 	meterID            int
 	activeEnergy       float64
 	reactiveEnergy     float64
@@ -27,12 +26,30 @@ type Consumption struct {
 	date               time.Time
 }
 
-type ConsumptionRepository interface {
-	GetByMeterIDsAndDateRange(ctx context.Context, meterIDs []int, startDate, endDate time.Time) ([]*Consumption, error)
+func (c *Consumption) ID() string {
+	return c.id
 }
 
-type ConsumptionService interface {
-	GetWeeklyConsumptions(ctx context.Context, meterIDs []int, referenceDate time.Time) (*ConsumptionResponse, error)
-	GetMonthlyConsumptions(ctx context.Context, meterIDs []int, referenceDate time.Time) (*ConsumptionResponse, error)
-	GetDailyConsumptions(ctx context.Context, meterIDs []int, referenceDate time.Time) (*ConsumptionResponse, error)
+func (c *Consumption) MeterID() int {
+	return c.meterID
+}
+
+func (c *Consumption) ActiveEnergy() float64 {
+	return c.activeEnergy
+}
+
+func (c *Consumption) ReactiveEnergy() float64 {
+	return c.reactiveEnergy
+}
+
+func (c *Consumption) CapacitiveReactive() float64 {
+	return c.capacitiveReactive
+}
+
+func (c *Consumption) Solar() float64 {
+	return c.solar
+}
+
+func (c *Consumption) Date() time.Time {
+	return c.date
 }
