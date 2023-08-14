@@ -4,7 +4,12 @@ import (
 	"time"
 )
 
-func NewConsumption(id string, meterID int, activeEnergy, reactiveEnergy, capacitiveReactive, solar float64, date time.Time) *Consumption {
+func NewConsumption(
+	id string,
+	meterID int,
+	activeEnergy, reactiveEnergy, capacitiveReactive, solar float64,
+	date time.Time,
+) *Consumption {
 	return &Consumption{
 		id,
 		meterID,

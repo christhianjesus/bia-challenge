@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS consumptions;
 CREATE TABLE consumptions (
-  id  TEXT,
+  id TEXT,
   meter_id INT,
   active_energy DOUBLE PRECISION,
   reactive_energy DOUBLE PRECISION,

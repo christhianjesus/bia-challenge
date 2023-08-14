@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/christhianjesus/bia-challenge/internal/application/period"
+	"github.com/christhianjesus/bia-challenge/internal/application/period/frequency"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
+	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,34 +22,39 @@ func setupConsumptionCollectionTest() []*consumption.Consumption {
 	}
 }
 
-func setupPeriodsTest() []*period.Period {
+func setupPeriodsTest() []period.Period {
 	t1 := time.Date(2021, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
 	t2 := time.Date(2022, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
 	t3 := time.Date(2023, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
 
-	return []*period.Period{
-		period.NewPeriod(t1, t2),
-		period.NewPeriod(t2, t3),
+	return []period.Period{
+		frequency.NewDailyPeriod(t1, t2),
+		frequency.NewDailyPeriod(t2, t3),
 	}
 }
 
-func TestGroupByMeterID(t *testing.T) {
-	consumptionCollection := setupConsumptionCollectionTest()
-	groupedConsumption := GroupByMetersIDs(consumptionCollection, []int{1, 2})
-
-	assert.NotNil(t, groupedConsumption)
-	assert.Len(t, groupedConsumption, 2)
-	assert.NotNil(t, groupedConsumption[1])
-	assert.NotNil(t, groupedConsumption[2])
-}
-
-func TestGroupByPeriod(t *testing.T) {
+func TestGetConsumptionPeriods(t *testing.T) {
 	periods := setupPeriodsTest()
 	consumptionCollection := setupConsumptionCollectionTest()
-	groupedConsumption := GroupByPeriods(consumptionCollection, periods)
+	groupedConsumption := NewConsumptionPeriodsService().GetConsumptionPeriods(consumptionCollection, periods)
 
 	assert.NotNil(t, groupedConsumption)
 	assert.Len(t, groupedConsumption, 2)
 	assert.Len(t, groupedConsumption[0], 1)
 	assert.Len(t, groupedConsumption[1], 1)
+}
+
+func TestGetPeriods(t *testing.T) {
+	startDate := time.Date(2023, time.June, 1, 0, 0, 0, 0, time.UTC)
+	endDate := time.Date(2023, time.June, 10, 0, 0, 0, 0, time.UTC)
+	periods, err := NewConsumptionPeriodsService().GetPeriods(startDate, endDate, "daily")
+
+	assert.NotNil(t, periods)
+	assert.NoError(t, err)
+	assert.Len(t, periods, 10)
+
+	for i, period := range periods {
+		assert.Equal(t, i+1, period.StartDate().Day())
+		assert.Equal(t, i+2, period.EndDate().Day())
+	}
 }

@@ -6,7 +6,6 @@ import (
 
 	"github.com/christhianjesus/bia-challenge/cmd/consumption/config"
 	consumptionApp "github.com/christhianjesus/bia-challenge/internal/application/consumption"
-	"github.com/christhianjesus/bia-challenge/internal/application/period/strategies"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure/consumption"
 	"github.com/joeshaw/envdecode"
 	"github.com/labstack/echo/v4"
@@ -37,16 +36,15 @@ func main() {
 
 func setupHandlers(conf *config.Config, router *echo.Group, db *sql.DB) {
 
-	psf := &strategies.PeriodStrategyFactory{}
-
 	// Repos
 	consumptionRepository := consumption.NewPostgreSQLConsumptionRepository(db)
 
 	// Services
-	consumptionService := consumptionApp.NewConsumptionService(consumptionRepository, nil, psf)
+	consumptionService := consumptionApp.NewConsumptionService(consumptionRepository)
+	consumptionPeriodsService := consumptionApp.NewConsumptionPeriodsService()
 
 	// Handlers
-	consumptionHandler := consumption.NewConsumptionHandler(consumptionService)
+	consumptionHandler := consumption.NewConsumptionHandler(consumptionService, consumptionPeriodsService)
 
 	// Register routes
 	consumptionHandler.RegisterRoutes(router)

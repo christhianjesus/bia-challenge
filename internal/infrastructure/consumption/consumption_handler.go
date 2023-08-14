@@ -4,13 +4,15 @@ import (
 	"net/http"
 	"time"
 
+	appConsumption "github.com/christhianjesus/bia-challenge/internal/application/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure"
 	"github.com/labstack/echo/v4"
 )
 
 type consumptionHandler struct {
-	service consumption.ConsumptionService
+	cs  consumption.ConsumptionService
+	cps appConsumption.ConsumptionPeriodsService
 }
 
 type consumptionSearchParams struct {
@@ -20,8 +22,17 @@ type consumptionSearchParams struct {
 	KindPeriod string `query:"kind_period"`
 }
 
-func NewConsumptionHandler(service consumption.ConsumptionService) infrastructure.Handler {
-	return &consumptionHandler{service}
+type accumulatedConsumption struct {
+	MeterID            int       `json:"meter_id"`
+	Address            string    `json:"address"`
+	Active             []float64 `json:"active"`
+	ReactiveInductive  []float64 `json:"reactive_inductive"`
+	ReactiveCapacitive []float64 `json:"reactive_capacitive"`
+	Exported           []float64 `json:"exported"`
+}
+
+func NewConsumptionHandler(cs consumption.ConsumptionService, cps appConsumption.ConsumptionPeriodsService) infrastructure.Handler {
+	return &consumptionHandler{cs, cps}
 }
 
 func (h *consumptionHandler) RegisterRoutes(router *echo.Group) {
@@ -46,23 +57,38 @@ func (h *consumptionHandler) GetAccumulatedConsumption(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid end_date format")
 	}
 
-	consumptionPeriods, err := h.service.GetConsumptionPeriods(ctx, startDate, endDate, params.KindPeriod)
+	periods, err := h.cps.GetPeriods(startDate, endDate, params.KindPeriod)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	accumulatedConsumption, err := h.service.GetAccumulatedConsumption(ctx, params.MetersIDs, startDate, endDate, params.KindPeriod)
+	groupedConsumptions, err := h.cs.GetGroupedByMetersIDs(ctx, params.MetersIDs, startDate, endDate)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	dataGraph := []map[string]interface{}{}
-	for _, meterConsumption := range accumulatedConsumption {
-		dataGraph = append(dataGraph, meterConsumption.GenerateSerializableResponse())
+	dataGraph := make([]*accumulatedConsumption, 0, len(params.MetersIDs))
+
+	for _, meterID := range params.MetersIDs {
+		consumptions := groupedConsumptions[meterID]
+		consumptionPeriods := h.cps.GetConsumptionPeriods(consumptions, periods)
+		active, rInductive, rCapacitive, exported := consumptionPeriods.SummarizeValues()
+		dataGraph = append(dataGraph, &accumulatedConsumption{
+			MeterID:            meterID,
+			Active:             active,
+			ReactiveInductive:  rInductive,
+			ReactiveCapacitive: rCapacitive,
+			Exported:           exported,
+		})
+	}
+
+	periodsRanges := make([]string, 0, len(periods))
+	for _, period := range periods {
+		periodsRanges = append(periodsRanges, period.Describe())
 	}
 
 	response := map[string]interface{}{
-		"period":     consumptionPeriods,
+		"period":     periodsRanges,
 		"data_graph": dataGraph,
 	}
 

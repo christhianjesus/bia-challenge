@@ -24,6 +24,6 @@ func TestNewConsumption(t *testing.T) {
 	assert.Equal(t, activeEnergy, consumption.ActiveEnergy())
 	assert.Equal(t, reactiveEnergy, consumption.ReactiveEnergy())
 	assert.Equal(t, capacitiveReactive, consumption.CapacitiveReactive())
-	assert.Equal(t, capacitiveReactive, consumption.CapacitiveReactive())
+	assert.Equal(t, solar, consumption.Solar())
 	assert.Equal(t, date, consumption.Date())
 }
