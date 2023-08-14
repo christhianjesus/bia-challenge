@@ -7,15 +7,15 @@ import (
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 )
 
-type ConsumptionService struct {
+type consumptionService struct {
 	repo consumption.ConsumptionRepository
 }
 
-func NewConsumptionService(repo consumption.ConsumptionRepository) *ConsumptionService {
-	return &ConsumptionService{repo}
+func NewConsumptionService(repo consumption.ConsumptionRepository) consumption.ConsumptionService {
+	return &consumptionService{repo}
 }
 
-func (cs *ConsumptionService) GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]*consumption.Consumption, error) {
+func (cs *consumptionService) GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]*consumption.Consumption, error) {
 	consumptions, err := cs.repo.GetByMetersIDsAndDateRange(ctx, metersIDs, startDate, endDate)
 	if err != nil {
 		return nil, err

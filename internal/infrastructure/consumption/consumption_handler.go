@@ -5,6 +5,7 @@ import (
 	"time"
 
 	appConsumption "github.com/christhianjesus/bia-challenge/internal/application/consumption"
+	"github.com/christhianjesus/bia-challenge/internal/domain/address"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure"
 	"github.com/labstack/echo/v4"
@@ -13,6 +14,7 @@ import (
 type consumptionHandler struct {
 	cs  consumption.ConsumptionService
 	cps appConsumption.ConsumptionPeriodsService
+	as  address.AddressService
 }
 
 type consumptionSearchParams struct {
@@ -31,8 +33,8 @@ type accumulatedConsumption struct {
 	Exported           []float64 `json:"exported"`
 }
 
-func NewConsumptionHandler(cs consumption.ConsumptionService, cps appConsumption.ConsumptionPeriodsService) infrastructure.Handler {
-	return &consumptionHandler{cs, cps}
+func NewConsumptionHandler(cs consumption.ConsumptionService, cps appConsumption.ConsumptionPeriodsService, as address.AddressService) infrastructure.Handler {
+	return &consumptionHandler{cs, cps, as}
 }
 
 func (h *consumptionHandler) RegisterRoutes(router *echo.Group) {
@@ -62,6 +64,11 @@ func (h *consumptionHandler) GetAccumulatedConsumption(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
+	addresses, err := h.as.GetByMetersIDs(ctx, params.MetersIDs)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
 	groupedConsumptions, err := h.cs.GetGroupedByMetersIDs(ctx, params.MetersIDs, startDate, endDate)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -75,6 +82,7 @@ func (h *consumptionHandler) GetAccumulatedConsumption(c echo.Context) error {
 		active, rInductive, rCapacitive, exported := consumptionPeriods.SummarizeValues()
 		dataGraph = append(dataGraph, &accumulatedConsumption{
 			MeterID:            meterID,
+			Address:            addresses[meterID],
 			Active:             active,
 			ReactiveInductive:  rInductive,
 			ReactiveCapacitive: rCapacitive,
