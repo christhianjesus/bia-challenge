@@ -30,3 +30,6 @@ String with the following format YYYY/MM/DD
 
 * ***kind_period***
 String can be any of these: monthly, daily, weekly
+
+## Folder structure
+![](https://github.com/christhianjesus/bia-challenge/tree/main/docs/folder_structure.png "Folder structure")
