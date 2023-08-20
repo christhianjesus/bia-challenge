@@ -1,6 +1,8 @@
-package consumption
+package consumptionperiods
 
-type ConsumptionPeriod []Consumption
+import "github.com/christhianjesus/bia-challenge/internal/domain/consumption"
+
+type ConsumptionPeriod []consumption.Consumption
 
 func (cp ConsumptionPeriod) TotalValues() (active, rInductive, rCapacitive, exported float64) {
 	for _, consumption := range cp {
@@ -13,7 +15,7 @@ func (cp ConsumptionPeriod) TotalValues() (active, rInductive, rCapacitive, expo
 	return
 }
 
-type ConsumptionPeriods [][]Consumption
+type ConsumptionPeriods [][]consumption.Consumption
 
 func (cp ConsumptionPeriods) SummarizeValues() (active, rInductive, rCapacitive, exported []float64) {
 	active = make([]float64, 0, len(cp))

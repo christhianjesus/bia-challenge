@@ -1,22 +1,23 @@
-package consumption
+package consumptionperiods
 
 import (
 	"time"
 
 	"github.com/christhianjesus/bia-challenge/internal/application/periodstrategy"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
+	"github.com/christhianjesus/bia-challenge/internal/domain/consumptionperiods"
 	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 )
 
 type consumptionPeriodsService struct{}
 
-func NewConsumptionPeriodsService() consumption.ConsumptionPeriodsService {
+func NewConsumptionPeriodsService() consumptionperiods.ConsumptionPeriodsService {
 	return &consumptionPeriodsService{}
 }
 
 // it is assumed that the consumptions are ordered by date, as well as the periods
 func (c *consumptionPeriodsService) GetConsumptionPeriods(consumptions []consumption.Consumption, periods []period.Period,
-) consumption.ConsumptionPeriods {
+) consumptionperiods.ConsumptionPeriods {
 	groupedConsumptions := make([][]consumption.Consumption, len(periods))
 
 	// Fast approach to allocate memory using ceil division
@@ -42,7 +43,7 @@ func (c *consumptionPeriodsService) GetConsumptionPeriods(consumptions []consump
 		}
 	}
 
-	return consumption.ConsumptionPeriods(groupedConsumptions)
+	return consumptionperiods.ConsumptionPeriods(groupedConsumptions)
 }
 
 func (c *consumptionPeriodsService) GetPeriods(startDate, endDate time.Time, kindPeriod string) ([]period.Period, error) {

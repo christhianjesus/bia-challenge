@@ -8,6 +8,7 @@ import (
 	"github.com/christhianjesus/bia-challenge/cmd/consumption/config"
 	addressApp "github.com/christhianjesus/bia-challenge/internal/application/address"
 	consumptionApp "github.com/christhianjesus/bia-challenge/internal/application/consumption"
+	"github.com/christhianjesus/bia-challenge/internal/application/consumptionperiods"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure/address"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure/consumption"
 	"github.com/joeshaw/envdecode"
@@ -46,7 +47,7 @@ func setupHandlers(conf *config.Config, router *echo.Group, db *sql.DB) {
 	// Services
 	addressService := addressApp.NewAddressService(addressRepository)
 	consumptionService := consumptionApp.NewConsumptionService(consumptionRepository)
-	consumptionPeriodsService := consumptionApp.NewConsumptionPeriodsService()
+	consumptionPeriodsService := consumptionperiods.NewConsumptionPeriodsService()
 
 	// Handlers
 	consumptionHandler := consumption.NewConsumptionHandler(consumptionService, consumptionPeriodsService, addressService)

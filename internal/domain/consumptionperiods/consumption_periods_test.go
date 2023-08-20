@@ -1,9 +1,10 @@
-package consumption
+package consumptionperiods
 
 import (
 	"testing"
 	"time"
 
+	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,10 +13,10 @@ func setupConsumptionCollectionTest() ConsumptionPeriod {
 	t2 := time.Date(2022, time.Month(5), 7, 0, 0, 0, 0, time.UTC)
 	t3 := time.Date(2023, time.Month(1), 23, 0, 0, 0, 0, time.UTC)
 
-	return []Consumption{
-		NewConsumption("", 1, 1, 3, 4, 1, t1),
-		NewConsumption("", 2, 2, 1, 3, 1, t2),
-		NewConsumption("", 2, 2, 4, 4, 1, t3),
+	return []consumption.Consumption{
+		consumption.NewConsumption("", 1, 1, 3, 4, 1, t1),
+		consumption.NewConsumption("", 2, 2, 1, 3, 1, t2),
+		consumption.NewConsumption("", 2, 2, 4, 4, 1, t3),
 	}
 }
 
