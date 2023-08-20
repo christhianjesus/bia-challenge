@@ -8,14 +8,9 @@ import (
 	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 )
 
-type ConsumptionPeriodsService interface {
-	GetConsumptionPeriods(consumptions []consumption.Consumption, periods []period.Period) consumption.ConsumptionPeriods
-	GetPeriods(startDate, endDate time.Time, kindPeriod string) ([]period.Period, error)
-}
-
 type consumptionPeriodsService struct{}
 
-func NewConsumptionPeriodsService() ConsumptionPeriodsService {
+func NewConsumptionPeriodsService() consumption.ConsumptionPeriodsService {
 	return &consumptionPeriodsService{}
 }
 

@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	appConsumption "github.com/christhianjesus/bia-challenge/internal/application/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/domain/address"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure"
@@ -13,7 +12,7 @@ import (
 
 type consumptionHandler struct {
 	cs  consumption.ConsumptionService
-	cps appConsumption.ConsumptionPeriodsService
+	cps consumption.ConsumptionPeriodsService
 	as  address.AddressService
 }
 
@@ -33,7 +32,7 @@ type accumulatedConsumption struct {
 	Exported           []float64 `json:"exported"`
 }
 
-func NewConsumptionHandler(cs consumption.ConsumptionService, cps appConsumption.ConsumptionPeriodsService, as address.AddressService) infrastructure.Handler {
+func NewConsumptionHandler(cs consumption.ConsumptionService, cps consumption.ConsumptionPeriodsService, as address.AddressService) infrastructure.Handler {
 	return &consumptionHandler{cs, cps, as}
 }
 
