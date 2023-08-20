@@ -1,19 +1,19 @@
 package consumption
 
-type ConsumptionPeriod []*Consumption
+type ConsumptionPeriod []Consumption
 
 func (cp ConsumptionPeriod) TotalValues() (active, rInductive, rCapacitive, exported float64) {
 	for _, consumption := range cp {
-		active += consumption.activeEnergy
-		rInductive += consumption.reactiveEnergy
-		rCapacitive += consumption.capacitiveReactive
-		exported += consumption.solar
+		active += consumption.ActiveEnergy()
+		rInductive += consumption.ReactiveEnergy()
+		rCapacitive += consumption.CapacitiveReactive()
+		exported += consumption.Solar()
 	}
 
 	return
 }
 
-type ConsumptionPeriods [][]*Consumption
+type ConsumptionPeriods [][]Consumption
 
 func (cp ConsumptionPeriods) SummarizeValues() (active, rInductive, rCapacitive, exported []float64) {
 	active = make([]float64, 0, len(cp))

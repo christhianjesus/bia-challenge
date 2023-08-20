@@ -17,7 +17,7 @@ func NewPostgreSQLConsumptionRepository(db *sql.DB) consumption.ConsumptionRepos
 	return &postgreSQLConsumptionRepository{db: db}
 }
 
-func (r *postgreSQLConsumptionRepository) GetByMetersIDsAndDateRange(ctx context.Context, metersIDs []int, startDate, endDate time.Time) ([]*consumption.Consumption, error) {
+func (r *postgreSQLConsumptionRepository) GetByMetersIDsAndDateRange(ctx context.Context, metersIDs []int, startDate, endDate time.Time) ([]consumption.Consumption, error) {
 	query := `
         SELECT id, meter_id, active_energy, reactive_energy, capacitive_reactive, solar, date FROM consumptions
         WHERE meter_id = ANY($1) AND date >= $2 AND date <= $3
@@ -28,7 +28,7 @@ func (r *postgreSQLConsumptionRepository) GetByMetersIDsAndDateRange(ctx context
 	}
 	defer rows.Close()
 
-	var consumptions []*consumption.Consumption
+	var consumptions []consumption.Consumption
 	for rows.Next() {
 		var (
 			id                 string

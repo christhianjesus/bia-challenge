@@ -6,5 +6,5 @@ import (
 )
 
 type ConsumptionService interface {
-	GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]*Consumption, error)
+	GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]Consumption, error)
 }

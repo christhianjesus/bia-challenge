@@ -15,7 +15,7 @@ func NewConsumptionService(repo consumption.ConsumptionRepository) consumption.C
 	return &consumptionService{repo}
 }
 
-func (cs *consumptionService) GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]*consumption.Consumption, error) {
+func (cs *consumptionService) GetGroupedByMetersIDs(ctx context.Context, metersIDs []int, startDate, endDate time.Time) (map[int][]consumption.Consumption, error) {
 	consumptions, err := cs.repo.GetByMetersIDsAndDateRange(ctx, metersIDs, startDate, endDate)
 	if err != nil {
 		return nil, err
@@ -27,10 +27,10 @@ func (cs *consumptionService) GetGroupedByMetersIDs(ctx context.Context, metersI
 		meterConsumptionsTotal[consumption.MeterID()] += 1
 	}
 
-	groupedConsumptions := make(map[int][]*consumption.Consumption, len(metersIDs))
+	groupedConsumptions := make(map[int][]consumption.Consumption, len(metersIDs))
 	for _, meterID := range metersIDs {
 		// preallocate memory needed in each bucket
-		groupedConsumptions[meterID] = make([]*consumption.Consumption, 0, meterConsumptionsTotal[meterID])
+		groupedConsumptions[meterID] = make([]consumption.Consumption, 0, meterConsumptionsTotal[meterID])
 	}
 
 	for _, consumption := range consumptions {

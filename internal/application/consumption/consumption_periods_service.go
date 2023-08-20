@@ -9,7 +9,7 @@ import (
 )
 
 type ConsumptionPeriodsService interface {
-	GetConsumptionPeriods(consumptions []*consumption.Consumption, periods []period.Period) consumption.ConsumptionPeriods
+	GetConsumptionPeriods(consumptions []consumption.Consumption, periods []period.Period) consumption.ConsumptionPeriods
 	GetPeriods(startDate, endDate time.Time, kindPeriod string) ([]period.Period, error)
 }
 
@@ -20,14 +20,14 @@ func NewConsumptionPeriodsService() ConsumptionPeriodsService {
 }
 
 // it is assumed that the consumptions are ordered by date, as well as the periods
-func (c *consumptionPeriodsService) GetConsumptionPeriods(consumptions []*consumption.Consumption, periods []period.Period,
+func (c *consumptionPeriodsService) GetConsumptionPeriods(consumptions []consumption.Consumption, periods []period.Period,
 ) consumption.ConsumptionPeriods {
-	groupedConsumptions := make([][]*consumption.Consumption, len(periods))
+	groupedConsumptions := make([][]consumption.Consumption, len(periods))
 
 	// Fast approach to allocate memory using ceil division
 	approxSize := (len(consumptions) + len(periods) + 1) / len(periods)
 	for i := range periods {
-		groupedConsumptions[i] = make([]*consumption.Consumption, 0, approxSize)
+		groupedConsumptions[i] = make([]consumption.Consumption, 0, approxSize)
 	}
 
 	dateIndex := 0

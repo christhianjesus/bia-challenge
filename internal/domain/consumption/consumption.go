@@ -4,13 +4,23 @@ import (
 	"time"
 )
 
+type Consumption interface {
+	ID() string
+	MeterID() int
+	ActiveEnergy() float64
+	ReactiveEnergy() float64
+	CapacitiveReactive() float64
+	Solar() float64
+	Date() time.Time
+}
+
 func NewConsumption(
 	id string,
 	meterID int,
 	activeEnergy, reactiveEnergy, capacitiveReactive, solar float64,
 	date time.Time,
-) *Consumption {
-	return &Consumption{
+) Consumption {
+	return &consumption{
 		id,
 		meterID,
 		activeEnergy,
@@ -21,7 +31,7 @@ func NewConsumption(
 	}
 }
 
-type Consumption struct {
+type consumption struct {
 	id                 string
 	meterID            int
 	activeEnergy       float64
@@ -31,30 +41,30 @@ type Consumption struct {
 	date               time.Time
 }
 
-func (c *Consumption) ID() string {
+func (c *consumption) ID() string {
 	return c.id
 }
 
-func (c *Consumption) MeterID() int {
+func (c *consumption) MeterID() int {
 	return c.meterID
 }
 
-func (c *Consumption) ActiveEnergy() float64 {
+func (c *consumption) ActiveEnergy() float64 {
 	return c.activeEnergy
 }
 
-func (c *Consumption) ReactiveEnergy() float64 {
+func (c *consumption) ReactiveEnergy() float64 {
 	return c.reactiveEnergy
 }
 
-func (c *Consumption) CapacitiveReactive() float64 {
+func (c *consumption) CapacitiveReactive() float64 {
 	return c.capacitiveReactive
 }
 
-func (c *Consumption) Solar() float64 {
+func (c *consumption) Solar() float64 {
 	return c.solar
 }
 
-func (c *Consumption) Date() time.Time {
+func (c *consumption) Date() time.Time {
 	return c.date
 }
