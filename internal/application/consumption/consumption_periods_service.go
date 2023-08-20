@@ -3,7 +3,7 @@ package consumption
 import (
 	"time"
 
-	appPeriod "github.com/christhianjesus/bia-challenge/internal/application/period"
+	"github.com/christhianjesus/bia-challenge/internal/application/periodstrategy"
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 )
@@ -46,7 +46,7 @@ func (c *consumptionPeriodsService) GetConsumptionPeriods(consumptions []consump
 }
 
 func (c *consumptionPeriodsService) GetPeriods(startDate, endDate time.Time, kindPeriod string) ([]period.Period, error) {
-	strategy, err := appPeriod.CreatePeriodStrategy(period.KindPeriod(kindPeriod))
+	strategy, err := periodstrategy.CreatePeriodStrategy(period.KindPeriod(kindPeriod))
 	if err != nil {
 		return nil, err
 	}

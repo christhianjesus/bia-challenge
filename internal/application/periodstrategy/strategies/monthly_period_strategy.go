@@ -3,7 +3,7 @@ package strategies
 import (
 	"time"
 
-	"github.com/christhianjesus/bia-challenge/internal/application/period/frequency"
+	"github.com/christhianjesus/bia-challenge/internal/application/periodstrategy/frequency"
 	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 )
 

@@ -1,4 +1,4 @@
-package period
+package periodstrategy
 
 import (
 	"time"

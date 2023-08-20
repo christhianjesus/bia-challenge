@@ -1,9 +1,9 @@
-package period
+package periodstrategy
 
 import (
 	"testing"
 
-	"github.com/christhianjesus/bia-challenge/internal/application/period/strategies"
+	"github.com/christhianjesus/bia-challenge/internal/application/periodstrategy/strategies"
 	"github.com/christhianjesus/bia-challenge/internal/domain/period"
 	"github.com/stretchr/testify/assert"
 )
