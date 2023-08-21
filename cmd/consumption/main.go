@@ -9,6 +9,7 @@ import (
 	addressApp "github.com/christhianjesus/bia-challenge/internal/application/address"
 	consumptionApp "github.com/christhianjesus/bia-challenge/internal/application/consumption"
 	"github.com/christhianjesus/bia-challenge/internal/application/consumptionperiods"
+	"github.com/christhianjesus/bia-challenge/internal/infrastructure"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure/address"
 	"github.com/christhianjesus/bia-challenge/internal/infrastructure/consumption"
 	"github.com/joeshaw/envdecode"
@@ -42,7 +43,7 @@ func setupHandlers(conf *config.Config, router *echo.Group, db *sql.DB) {
 
 	// Repos
 	addressRepository := address.NewMSAddressRepository(http.DefaultClient)
-	consumptionRepository := consumption.NewPostgreSQLConsumptionRepository(db)
+	consumptionRepository := consumption.NewPostgreSQLConsumptionRepository(&infrastructure.DBAdapter{DB: db})
 
 	// Services
 	addressService := addressApp.NewAddressService(addressRepository)

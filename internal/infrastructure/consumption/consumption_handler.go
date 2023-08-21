@@ -61,17 +61,17 @@ func (h *consumptionHandler) GetAccumulatedConsumption(c echo.Context) error {
 
 	periods, err := h.cps.GetPeriods(startDate, endDate, params.KindPeriod)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	addresses, err := h.as.GetByMetersIDs(ctx, params.MetersIDs)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	groupedConsumptions, err := h.cs.GetGroupedByMetersIDs(ctx, params.MetersIDs, startDate, endDate)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	dataGraph := make([]*accumulatedConsumption, 0, len(params.MetersIDs))
@@ -95,7 +95,7 @@ func (h *consumptionHandler) GetAccumulatedConsumption(c echo.Context) error {
 		periodsRanges = append(periodsRanges, period.Describe())
 	}
 
-	response := map[string]interface{}{
+	response := map[string]any{
 		"period":     periodsRanges,
 		"data_graph": dataGraph,
 	}

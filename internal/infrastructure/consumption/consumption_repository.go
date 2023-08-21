@@ -2,18 +2,18 @@ package consumption
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/christhianjesus/bia-challenge/internal/domain/consumption"
+	"github.com/christhianjesus/bia-challenge/internal/infrastructure"
 	"github.com/lib/pq"
 )
 
 type postgreSQLConsumptionRepository struct {
-	db *sql.DB
+	db infrastructure.SQLClient
 }
 
-func NewPostgreSQLConsumptionRepository(db *sql.DB) consumption.ConsumptionRepository {
+func NewPostgreSQLConsumptionRepository(db infrastructure.SQLClient) consumption.ConsumptionRepository {
 	return &postgreSQLConsumptionRepository{db: db}
 }
 
